@@ -268,6 +268,10 @@ class OrderController extends Controller
         $model = $this->findModel($id);
 
         $items = new ActiveDataProvider([
+            'query' => OrderItem::find()->andWhere(['order_id' => $model->id]),
+        ]);
+
+        $items2 = new ActiveDataProvider([
             'query' => Item::find()->andWhere(['<', 'id', 0]),
         ]);
 
@@ -345,6 +349,7 @@ class OrderController extends Controller
         return $this->render('checkout', [
             'model' => $model,
             'items' => $items,
+            'items2' => $items2,
         ]);
     }
 

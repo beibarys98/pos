@@ -3,6 +3,9 @@
 use yii\helpers\Html;
 use yii\bootstrap5\ActiveForm;
 use yii\grid\GridView;
+use yii\grid\ActionColumn;
+use yii\helpers\Url;
+use common\models\OrderItem;
 
 /** @var yii\web\View $this */
 /** @var common\models\Order $model */
@@ -15,14 +18,49 @@ $this->title = 'Төлем жасау';
 
     <h1><?= $this->title ?></h1>
 
-    <?php $form = ActiveForm::begin(); ?>
-
-    <div class="mb-3"></div>
-
     <?= GridView::widget([
         'dataProvider' => $items,
         'summary' => false,
         'tableOptions' => ['class' => 'table table-sm table-hover table-striped'],
+        'columns' => [
+            [
+                'attribute' => 'item_id',
+                'label' => 'Атауы',
+                'enableSorting' => false,
+                'value' => function ($item) {
+                    return $item->item->title;
+                }
+            ],
+            [
+                'attribute' => 'price',
+                'label' => 'Бағасы',
+                'enableSorting' => false,
+                'contentOptions' => ['class' => 'text-center'],
+                'headerOptions' => ['class' => 'text-center'],
+                'value' => function ($item) {
+                    return $item->item->price;
+                }
+            ],
+            [
+                'attribute' => 'quantity',
+                'label' => 'Саны',
+                'enableSorting' => false,
+                'contentOptions' => ['class' => 'text-center'],
+                'headerOptions' => ['class' => 'text-center'],
+            ],
+        ],
+    ]); ?>
+
+    <br>
+    <br>
+    <br>
+
+    <?php $form = ActiveForm::begin(); ?>
+
+    <?= GridView::widget([
+        'dataProvider' => $items2,
+        'summary' => false,
+        'tableOptions' => ['class' => 'table table-sm table-hover table-striped additional-services'],
         'columns' => [
             [
                 'attribute' => 'title',
@@ -31,8 +69,9 @@ $this->title = 'Төлем жасау';
             ],
             [
                 'attribute' => 'price',
-                'contentOptions' => ['class' => 'text-center', 'style' => 'width: 10%'],
                 'label' => 'Бағасы',
+                'contentOptions' => ['class' => 'text-center'],
+                'headerOptions' => ['class' => 'text-center'],
                 'enableSorting' => false,
             ],
             [
@@ -73,8 +112,6 @@ $this->title = 'Төлем жасау';
     </div>
 
 
-
-
     <div class="form-group text-center">
         <?= Html::submitButton('Сақтау', ['class' => 'btn btn-success']) ?>
     </div>
@@ -88,24 +125,18 @@ $this->registerJs(<<<JS
 window.changeQty = function(id, delta) {
     const buySpan = document.getElementById('qty-' + id);
     const buyInput = document.getElementById('input-' + id);
-    const stockSpan = document.getElementById('stock-' + id);
 
     let buy = parseInt(buySpan.innerText);
-    let stock = parseInt(stockSpan.innerText);
 
     if (delta > 0) {
-        if (stock <= 0) return; // cannot exceed stock
         buy++;
-        stock--;
     } else {
         if (buy <= 0) return; // cannot go below 0
         buy--;
-        stock++;
     }
 
     buySpan.innerText = buy;
     buyInput.value = buy;
-    stockSpan.innerText = stock;
 
     recalcTotal();
 }
@@ -113,21 +144,29 @@ window.changeQty = function(id, delta) {
 window.recalcTotal = function() {
     let total = 0;
 
-    const items = document.querySelectorAll('input[id^="input-"]');
-    items.forEach(function(input) {
-        const id = input.id.replace('input-', '');
-        const qty = parseInt(input.value);
-        if (qty > 0) {
-            const priceCell = input.closest('tr').querySelector('td:nth-child(2)');
-            const price = parseInt(priceCell.innerText);
-            total += price * qty;
-        }
+    // loop through each row of the GridView
+    const rows = document.querySelectorAll('.table tbody tr');
+    rows.forEach(function(row) {
+        // get price cell (2nd column)
+        let priceCell = row.querySelector('td:nth-child(2)');
+        let qtyCell = row.querySelector('td:nth-child(3)');
+
+        if (!priceCell || !qtyCell) return;
+
+        // parse numbers
+        let price = parseFloat(priceCell.innerText.replace(/\D/g,'')) || 0;
+        let qty = parseInt(qtyCell.innerText.replace(/\D/g,'')) || 0;
+
+        total += price * qty;
     });
 
+    // update total in DOM
     document.getElementById('order-total').innerText = total;
 }
 
+// run on page load
 window.recalcTotal();
+
 
 JS);
 ?>
