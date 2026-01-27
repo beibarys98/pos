@@ -11,7 +11,7 @@ class m260125_154326_create_order_system_tables extends Migration
             'id' => $this->primaryKey(),
             'title' => $this->string()->notNull(),
             'price' => $this->integer()->notNull(),
-            'quantity' => $this->integer()->notNull()->defaultValue(0),
+            'quantity' => $this->integer()->notNull(),
         ]);
 
         /** ORDER TABLE */
@@ -19,7 +19,7 @@ class m260125_154326_create_order_system_tables extends Migration
             'id' => $this->primaryKey(),
             'key_number' => $this->string(50)->notNull()->unique(),
             'status' => $this->string(30)->notNull(),
-            'total' => $this->integer()->notNull()->defaultValue(0),
+            'total' => $this->integer()->notNull(),
         ]);
 
         /** ORDER_ITEM TABLE */

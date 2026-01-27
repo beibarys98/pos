@@ -29,6 +29,14 @@ $this->title = 'Тапсырыстар';
         'tableOptions' => [
             'class' => 'table table-sm table-hover table-striped'
         ],
+        'rowOptions' => function ($model) {
+            if ($model->status === 'Берілді') {
+                return ['class' => 'table-warning']; // yellow row
+            } else if ($model->status === 'Төленді') {
+                return ['class' => 'table-success']; // green row
+            }
+            return [];
+        },
         'summary' => 'Тапсырыс саны: {totalCount}',
         'emptyText' => 'Ештеңе жоқ!',
         'pager' => [
@@ -51,10 +59,19 @@ $this->title = 'Тапсырыстар';
             ],
             [
                 'class' => ActionColumn::className(),
+                'template' => '{done} <span style="margin-right: 10px;"></span> {update} <span style="margin-right: 10px;"></span> {delete}',
+                'buttons' => [
+                    'done' => function ($url, Order $model, $key) {
+                        return Html::a('<i class="fa-solid fa-check"></i>', $url, [
+                            'class' => 'text-primary',
+                        ]);
+                    },
+                ],
                 'urlCreator' => function ($action, Order $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                 }
             ],
+
         ],
     ]); ?>
 

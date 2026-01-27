@@ -59,5 +59,40 @@ $this->title = 'Меню';
         ],
     ]); ?>
 
+    <br>
+    <br>
+    <br>
+
+    <?= GridView::widget([
+        'dataProvider' => $dataProvider2,
+        'filterModel' => $searchModel2,
+        'tableOptions' => [
+            'class' => 'table table-sm table-hover table-striped'
+        ],
+        'summary' => false,
+        'emptyText' => 'Ештеңе жоқ!',
+        'pager' => [
+            'class' => 'yii\bootstrap5\LinkPager',
+        ],
+        'columns' => [
+            [
+                'attribute' => 'title',
+                'label' => 'Атауы',
+            ],
+            [
+                'attribute' => 'price',
+                'label' => 'Бағасы',
+                'headerOptions' => ['style' => 'width: 10%']
+            ],
+            [
+                'class' => ActionColumn::className(),
+                'template' => '{update} <span style="margin-right: 10px;"></span> {delete}',
+                'urlCreator' => function ($action, Item $model, $key, $index, $column) {
+                    return Url::toRoute([$action, 'id' => $model->id]);
+                }
+            ],
+        ],
+    ]); ?>
+
 
 </div>

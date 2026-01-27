@@ -16,7 +16,9 @@ use Yii;
  */
 class Order extends \yii\db\ActiveRecord
 {
-
+    public $day;
+    public $clients;
+    public $money;
 
     /**
      * {@inheritdoc}
@@ -32,6 +34,7 @@ class Order extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['day', 'clients', 'money'], 'safe'],
             [['total'], 'default', 'value' => 0],
             [['key_number', 'status'], 'required'],
             [['total'], 'integer'],
@@ -72,5 +75,4 @@ class Order extends \yii\db\ActiveRecord
     {
         return new \common\models\query\OrderQuery(get_called_class());
     }
-
 }

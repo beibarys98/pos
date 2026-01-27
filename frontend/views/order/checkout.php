@@ -8,7 +8,7 @@ use yii\grid\GridView;
 /** @var common\models\Order $model */
 /** @var yii\widgets\ActiveForm $form */
 
-$this->title = 'Жаңа тапсырыс';
+$this->title = 'Төлем жасау';
 ?>
 
 <div class="order-form">
@@ -16,10 +16,6 @@ $this->title = 'Жаңа тапсырыс';
     <h1><?= $this->title ?></h1>
 
     <?php $form = ActiveForm::begin(); ?>
-
-    <div class="mb-3"></div>
-
-    <?= $form->field($model, 'key_number')->input('number', ['maxlength' => true, 'autofocus' => true, 'placeholder' => 'Кілт'])->label(false) ?>
 
     <div class="mb-3"></div>
 
@@ -40,45 +36,33 @@ $this->title = 'Жаңа тапсырыс';
                 'enableSorting' => false,
             ],
             [
-                'attribute' => 'quantity',
-                'contentOptions' => ['class' => 'text-center', 'style' => 'width: 10%'],
-                'label' => 'Қалды',
-                'enableSorting' => false,
-                'format' => 'raw',
-                'value' => function ($item) {
-                    return '
-                        <span id="stock-' . $item->id . '">' . $item->quantity . '</span>
-                        <input type="hidden"
-                            id="stock-init-' . $item->id . '"
-                            value="' . $item->quantity . '">
-                    ';
-                }
-            ],
-
-            [
                 'headerOptions' => ['style' => 'width: 10%'],
                 'label' => 'Тапсырыс',
                 'format' => 'raw',
-                'value' => function ($item) {
+                'value' => function ($item) use ($model) {
+                    $orderItem = \common\models\OrderItem::findOne(['order_id' => $model->id, 'item_id' => $item->id]);
+                    $qty = $orderItem ? $orderItem->quantity : 0;
+
                     return '
-                        <div class="d-flex align-items-center gap-2">
-                            <button type="button" class="btn btn-sm btn-outline-danger"
-                                onclick="changeQty(' . $item->id . ', -1)">−</button>
+                    <div class="d-flex align-items-center gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-danger"
+                            onclick="changeQty(' . $item->id . ', -1)">−</button>
 
-                            <span id="qty-' . $item->id . '">0</span>
+                        <span id="qty-' . $item->id . '">' . $qty . '</span>
 
-                            <button type="button" class="btn btn-sm btn-outline-success"
-                                onclick="changeQty(' . $item->id . ', 1)">+</button>
+                        <button type="button" class="btn btn-sm btn-outline-success"
+                            onclick="changeQty(' . $item->id . ', 1)">+</button>
 
-                            <input type="hidden"
-                                name="OrderItems[' . $item->id . '][quantity]"
-                                id="input-' . $item->id . '"
-                                value="0">
-                        </div>';
+                        <input type="hidden"
+                            name="OrderItems[' . $item->id . '][quantity]"
+                            id="input-' . $item->id . '"
+                            value="' . $qty . '">
+                    </div>';
                 }
             ],
         ],
     ]); ?>
+
 
     <div class="text-center my-3">
         <div class="fs-5 fw-bold">
@@ -87,6 +71,8 @@ $this->title = 'Жаңа тапсырыс';
             <span id="order-total" class="text-success">0</span> <span class="text-success">₸</span>
         </div>
     </div>
+
+
 
 
     <div class="form-group text-center">
@@ -108,11 +94,11 @@ window.changeQty = function(id, delta) {
     let stock = parseInt(stockSpan.innerText);
 
     if (delta > 0) {
-        if (stock <= 0) return;
+        if (stock <= 0) return; // cannot exceed stock
         buy++;
         stock--;
     } else {
-        if (buy <= 0) return;
+        if (buy <= 0) return; // cannot go below 0
         buy--;
         stock++;
     }
@@ -140,5 +126,8 @@ window.recalcTotal = function() {
 
     document.getElementById('order-total').innerText = total;
 }
+
+window.recalcTotal();
+
 JS);
 ?>

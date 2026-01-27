@@ -17,6 +17,8 @@ AppAsset::register($this);
 <html lang="<?= Yii::$app->language ?>" class="h-100">
 
 <head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <meta charset="<?= Yii::$app->charset ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <?php $this->registerCsrfMetaTags() ?>
@@ -36,11 +38,11 @@ AppAsset::register($this);
                 'class' => 'navbar navbar-expand navbar-light bg-light fixed-top shadow-sm',
             ],
         ]);
-        $menuItems = [
-            ['label' => 'Меню', 'url' => ['/item/index']],
-        ];
-        if (Yii::$app->user->isGuest) {
-            $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
+        $menuItems = [];
+
+        if (!Yii::$app->user->isGuest) {
+            $menuItems[] = ['label' => 'Меню', 'url' => ['/item/index']];
+            $menuItems[] = ['label' => 'Статистика', 'url' => ['/order/stats']];
         }
 
         echo Nav::widget([

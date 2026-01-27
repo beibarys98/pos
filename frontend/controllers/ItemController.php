@@ -41,9 +41,18 @@ class ItemController extends Controller
         $searchModel = new ItemSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
+        $dataProvider->query->andWhere(['>', 'id', 0]);
+
+        $searchModel2 = new ItemSearch();
+        $dataProvider2 = $searchModel2->search($this->request->queryParams);
+
+        $dataProvider2->query->andWhere(['<', 'id', 0]);
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'searchModel2' => $searchModel2,
+            'dataProvider2' => $dataProvider2,
         ]);
     }
 
