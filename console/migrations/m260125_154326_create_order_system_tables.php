@@ -17,9 +17,10 @@ class m260125_154326_create_order_system_tables extends Migration
         /** ORDER TABLE */
         $this->createTable('{{%order}}', [
             'id' => $this->primaryKey(),
-            'key_number' => $this->string(50)->notNull()->unique(),
+            'key_number' => $this->string(50)->notNull(),
             'status' => $this->string(30)->notNull(),
             'total' => $this->integer()->notNull(),
+            'created_at' => $this->integer()->notNull()->defaultValue(time()),
         ]);
 
         /** ORDER_ITEM TABLE */

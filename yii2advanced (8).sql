@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: mysql:3306
--- Время создания: Янв 27 2026 г., 12:38
+-- Время создания: Янв 27 2026 г., 12:43
 -- Версия сервера: 5.7.44
 -- Версия PHP: 8.2.27
 
@@ -194,8 +194,7 @@ ALTER TABLE `migration`
 -- Индексы таблицы `order`
 --
 ALTER TABLE `order`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `key_number` (`key_number`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Индексы таблицы `order_item`
