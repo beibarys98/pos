@@ -41,13 +41,23 @@ AppAsset::register($this);
         $menuItems = [];
 
         if (!Yii::$app->user->isGuest) {
-            $menuItems[] = ['label' => 'Меню', 'url' => ['/item/index']];
-            $menuItems[] = ['label' => 'Статистика', 'url' => ['/order/stats']];
+            $menuItems[] = [
+                'label' => '<i class="fa-solid fa-utensils"></i>',
+                'url' => ['/item/index'],
+                'title' => 'Меню',
+            ];
+            $menuItems[] = [
+                'label' => '<i class="fa-solid fa-chart-line"></i>',
+                'url' => ['/order/stats'],
+                'title' => 'Статистика',
+            ];
         }
+
 
         echo Nav::widget([
             'options' => ['class' => 'navbar-nav me-auto mb-md-0'],
             'items' => $menuItems,
+            'encodeLabels' => false,
         ]);
         if (!Yii::$app->user->isGuest) {
             echo Html::beginForm(['/site/logout'], 'post', ['class' => 'd-flex'])
