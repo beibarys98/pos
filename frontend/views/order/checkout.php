@@ -21,7 +21,7 @@ $this->title = 'Төлем жасау';
     <?= GridView::widget([
         'dataProvider' => $items,
         'summary' => false,
-        'tableOptions' => ['class' => 'table table-sm table-hover table-striped'],
+        'tableOptions' => ['class' => 'table table-sm table-hover table-striped cart-grid'],
         'columns' => [
             [
                 'attribute' => 'item_id',
@@ -35,7 +35,7 @@ $this->title = 'Төлем жасау';
                 'attribute' => 'price',
                 'label' => 'Бағасы',
                 'enableSorting' => false,
-                'contentOptions' => ['class' => 'text-center'],
+                'contentOptions' => ['class' => 'text-center price-cell'], // added "price-cell"
                 'headerOptions' => ['class' => 'text-center'],
                 'value' => function ($item) {
                     return $item->item->price;
@@ -45,11 +45,16 @@ $this->title = 'Төлем жасау';
                 'attribute' => 'quantity',
                 'label' => 'Саны',
                 'enableSorting' => false,
-                'contentOptions' => ['class' => 'text-center'],
+                'contentOptions' => ['class' => 'text-center qty-cell'], // added "qty-cell"
                 'headerOptions' => ['class' => 'text-center'],
+                'value' => function ($item) {
+                    return $item->quantity;
+                }
             ],
+
         ],
     ]); ?>
+
 
     <br>
     <br>
@@ -144,19 +149,21 @@ window.changeQty = function(id, delta) {
 window.recalcTotal = function() {
     let total = 0;
 
-    // loop through each row of the GridView
-    const rows = document.querySelectorAll('.table tbody tr');
-    rows.forEach(function(row) {
-        // get price cell (2nd column)
-        let priceCell = row.querySelector('td:nth-child(2)');
-        let qtyCell = row.querySelector('td:nth-child(3)');
+    document.querySelectorAll('.cart-grid tbody tr').forEach
+    (row => {
+        const price = parseFloat(row.querySelector('.price-cell')?.innerText || 0);
+        const qty = parseInt(row.querySelector('.qty-cell')?.innerText || 0);
+        total += price * qty;
+    });
 
-        if (!priceCell || !qtyCell) return;
+    // Sum from second GridView (additional services)
+    document.querySelectorAll('.additional-services tbody tr').forEach(row => {
+        const priceCell = row.querySelectorAll('td')[1]; // price is in second column
+        const price = parseFloat(priceCell?.innerText || 0);
 
-        // parse numbers
-        let price = parseFloat(priceCell.innerText.replace(/\D/g,'')) || 0;
-        let qty = parseInt(qtyCell.innerText.replace(/\D/g,'')) || 0;
-
+        const qtyInput = row.querySelector('input[name*="[quantity]"]');
+        const qty = parseInt(qtyInput?.value || 0);
+        
         total += price * qty;
     });
 
@@ -166,7 +173,6 @@ window.recalcTotal = function() {
 
 // run on page load
 window.recalcTotal();
-
 
 JS);
 ?>

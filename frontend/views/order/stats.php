@@ -23,7 +23,7 @@ $this->title = 'Статистика';
 
         ],
         [
-            'label' => 'Клиенттер',
+            'label' => 'Кілттер',
             'attribute' => 'clients',
             'headerOptions' => ['class' => 'text-center'],
             'contentOptions' => ['class' => 'text-center'],

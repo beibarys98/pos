@@ -275,7 +275,7 @@ class OrderController extends Controller
             'query' => Item::find()->andWhere(['<', 'id', 0]),
         ]);
 
-        if ($this->request->isPost && $model->load($this->request->post())) {
+        if ($this->request->isPost) {
             $postItems = Yii::$app->request->post('OrderItems', []);
 
             $transaction = Yii::$app->db->beginTransaction(\yii\db\Transaction::SERIALIZABLE);
@@ -285,6 +285,12 @@ class OrderController extends Controller
 
                 // 2️⃣ Prepare total
                 $total = 0;
+
+                // ✅ ADD THIS: Include original cart items in total
+                $cartItems = OrderItem::find()->andWhere(['order_id' => $model->id])->all();
+                foreach ($cartItems as $cartItem) {
+                    $total += $cartItem->item->price * $cartItem->quantity;
+                }
 
                 // 3️⃣ Process each posted item
                 foreach ($postItems as $itemId => $data) {
@@ -321,12 +327,6 @@ class OrderController extends Controller
                     if (!$orderItem->save(false)) {
                         throw new \Exception('Failed to save order item.');
                     }
-
-                    // Adjust stock
-                    $diff = $qty - $oldQty; // positive if added, negative if removed
-                    $item->quantity -= $diff;
-                    if ($item->quantity < 0) $item->quantity = 0; // safety
-                    $item->save(false);
 
                     // Add to total
                     $total += $item->price * $qty;
