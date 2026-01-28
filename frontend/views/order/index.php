@@ -25,7 +25,6 @@ $this->title = 'Тапсырыстар';
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
         'tableOptions' => [
             'class' => 'table table-sm table-hover table-striped'
         ],

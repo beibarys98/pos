@@ -25,7 +25,6 @@ $this->title = 'Меню';
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
         'tableOptions' => [
             'class' => 'table table-sm table-hover table-striped'
         ],
@@ -63,9 +62,10 @@ $this->title = 'Меню';
     <br>
     <br>
 
+    <h1>Кіру бағасы</h1>
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider2,
-        'filterModel' => $searchModel2,
         'tableOptions' => [
             'class' => 'table table-sm table-hover table-striped'
         ],
