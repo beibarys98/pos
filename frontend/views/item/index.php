@@ -41,12 +41,14 @@ $this->title = 'Меню';
             [
                 'attribute' => 'price',
                 'label' => 'Бағасы',
-                'headerOptions' => ['style' => 'width: 10%']
+                'headerOptions' => ['class' => 'text-center'],
+                'contentOptions' => ['class' => 'text-center'],
             ],
             [
                 'attribute' => 'quantity',
                 'label' => 'Саны',
-                'headerOptions' => ['style' => 'width: 10%']
+                'headerOptions' => ['class' => 'text-center'],
+                'contentOptions' => ['class' => 'text-center'],
             ],
             [
                 'class' => ActionColumn::className(),
@@ -82,7 +84,8 @@ $this->title = 'Меню';
             [
                 'attribute' => 'price',
                 'label' => 'Бағасы',
-                'headerOptions' => ['style' => 'width: 10%']
+                'headerOptions' => ['class' => 'text-center'],
+                'contentOptions' => ['class' => 'text-center'],
             ],
             [
                 'class' => ActionColumn::className(),
